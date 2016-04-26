@@ -1,0 +1,194 @@
+﻿<Window x:Class="TestEmotionApi.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestEmotionApi"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="EmotionProj-SQLOpeningDay" Height="768" Width="1366"
+        WindowStyle="None" WindowStartupLocation="CenterScreen" WindowState="Maximized" Loaded="Window_Loaded">
+    <!-- WindowStartupLocation="CenterScreen" WindowState="Maximized" -->
+    <Window.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+
+        <Storyboard x:Key="clockSpin" RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="image1">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="360"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="SettingGoIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="settingPane">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-350">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <BackEase EasingMode="EaseOut" Amplitude="0.1"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="SettingGoOut">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="settingPane">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-350"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <BackEase EasingMode="EaseIn" Amplitude="0.1"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF3FB6E2" Offset="0.003"/>
+                <GradientStop Color="White" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid Margin="24,24,24,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="606*"/>
+                <RowDefinition Height="58*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="67*"/>
+                <ColumnDefinition Width="33*"/>
+            </Grid.ColumnDefinitions>
+            <!--<Button x:Name="loadBtn" Content="เลือกรูปภาพ" Grid.Row="1" Click="loadBtn_Click" FontSize="16" Background="#FF1EB3D7" Foreground="White"/>-->
+            <ListBox x:Name="_resultListBox" ScrollViewer.VerticalScrollBarVisibility="Visible" Background="White" Grid.Row="1" Grid.Column="1">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="100" Height="100" Stretch="UniformToFill">
+                                    <Image.Source>
+                                        <CroppedBitmap Source="{Binding ImageSource}" SourceRect="{Binding UIRect}" />
+                                    </Image.Source>
+                                </Image>
+                                <Grid Background="#FFDC930D" Height="22">
+                                    <TextBlock Text="{Binding Age}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="12,6,0,0">
+                                <StackPanel Orientation="Vertical" Margin="0,0,0,12">
+                                    <TextBlock Text="{Binding EmotionText}" FontWeight="Normal" TextWrapping="Wrap" Width="250" Foreground="#FF075BB6" FontSize="14" LineStackingStrategy="MaxHeight"/>
+                                    <TextBlock Text="{Binding Gender}" Visibility="Collapsed" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image gif:ImageBehavior.AnimatedSource="{Binding GifPath}" Visibility="Visible" Width="60" Height="60" />
+                                    <StackPanel Orientation="Vertical" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding Emotion1}" FontSize="11"/>
+                                        <TextBlock Text="{Binding Emotion2}" FontSize="11"/>
+                                        <TextBlock Text="{Binding Emotion3}" FontSize="11"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Image x:Name="showImg" Grid.Row="1" Margin="0,6,12,0" Stretch="UniformToFill"/>
+                <Image x:Name="imgVideo" Margin="0,0,12,6" Stretch="UniformToFill"/>
+                <Controls:ProgressRing x:Name="pRing" IsActive="False" Foreground="#FF3FB6E2" Grid.Row="1" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" IsLarge="False" />
+            </Grid>
+            <Button x:Name="settingBtn" Content="settingsetting" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="settingBtn_Click" Margin="0,12.4,-0.4,0.2" Style="{DynamicResource ButtonStyle2}" Width="77">
+                <Button.Background>
+                    <ImageBrush Stretch="Uniform" ImageSource="Assets/settingicon.png"/>
+                </Button.Background>
+            </Button>
+            <Controls:ProgressRing x:Name="pRingList" IsActive="False" Foreground="#FF3FB6E2" Height="Auto" Width="Auto" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="130,220" IsLarge="False" Grid.Row="1" />
+            <Grid HorizontalAlignment="Right" Height="90" Margin="0,12,24,0" VerticalAlignment="Top" Width="90" Grid.Row="1">
+                <Image x:Name="image1" HorizontalAlignment="Center" Height="90" Margin="0" VerticalAlignment="Center" Width="90" Source="Assets/testclock2.png" RenderTransformOrigin="0.5,0.5">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+                <TextBlock x:Name="timeCT" HorizontalAlignment="Center" Height="43" Margin="0" TextWrapping="Wrap" Text="9" VerticalAlignment="Center" Width="43" TextAlignment="Center" FontSize="32" FontWeight="Bold"/>
+            </Grid>
+            <TextBlock x:Name="textBlock2" TextWrapping="Wrap" Text="Please look at camera and.. action !!" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Image x:Name="image" Source="Assets/mslogoc.png" HorizontalAlignment="Left" Margin="0,24,0,0"/>
+                <Image x:Name="image_Copy" Source="Assets/mscoglogo.png" HorizontalAlignment="Left" Margin="36,20,0,0"/>
+                <Image x:Name="image_Copy1" Source="Assets/logoinregis.png" HorizontalAlignment="Left" Margin="36,12,0,0"/>
+            </StackPanel>
+            <Grid x:Name="blankPopup" Grid.Column="1" Grid.Row="1" Background="White" Visibility="Collapsed">
+                <StackPanel x:Name="blankitem" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock x:Name="textBlock22" TextWrapping="Wrap" Text="Cannot find any face.." FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image x:Name="image2" Height="100" Width="100" Source="Assets/blankface.jpg" Margin="0,24,0,0"/>
+                </StackPanel>
+            </Grid>
+            <!--
+            <Button x:Name="button1" Content="start" Click="cap" Margin="9.8,10.4,225.6,9.6" Grid.Column="1" Grid.Row="1"/>
+            <Button x:Name="button" Grid.Row="1" Click="button_Click" Margin="100.8,0.4,113.6,-0.4" Grid.Column="1" Content="continue"/>
+            <Button x:Name="button1_Copy" Content="stop" Margin="215.8,11.4,19.6,8.6" Grid.Column="1" Grid.Row="1"/>-->
+
+        </Grid>
+        <StackPanel x:Name="settingPane" Height="258" Margin="0,0,-350,69.6" Width="230" Background="#FFE2E2E2" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <StackPanel.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </StackPanel.RenderTransform>
+            <Grid Margin="0,6,0,0">
+                <TextBlock x:Name="tbheader" TextWrapping="Wrap" Text="Setting" FontSize="16" Foreground="#FF060606" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+                <Button x:Name="shutdownBtn" Content="" FontSize="20" Style="{DynamicResource ButtonStyle2}" Click="shutdownBtn_Click" Height="30" Width="62" HorizontalAlignment="Right" BorderBrush="{x:Null}" Foreground="{x:Null}">
+                    <Button.Background>
+                        <ImageBrush Stretch="Uniform" ImageSource="Assets/shutdownicon.png"/>
+                    </Button.Background>
+                </Button>
+            </Grid>
+            <TextBlock x:Name="textBlock3" TextWrapping="Wrap" Text="Emotion API Key" Margin="8,6,8,0" FontSize="11"/>
+            <TextBox x:Name="keyTb" Height="23" Text="key.." Margin="8,2,8,0" TextAlignment="Center" FontSize="10" IsEnabled="False"/>
+            <TextBlock x:Name="textBlock3a" TextWrapping="Wrap" Text="Face API Key" Margin="8,6,8,0" FontSize="11"/>
+            <TextBox x:Name="faceKeyTb" Height="23" Text="key.." Margin="8,2,8,0" TextAlignment="Center" FontSize="10" IsEnabled="False"/>
+            <TextBlock x:Name="textBlock3b" TextWrapping="Wrap" Text="Capture Delay ( Second )" Margin="8,6,8,0" FontSize="11"/>
+            <TextBox x:Name="secondTb" Height="23" Text="10" Margin="8,2,8,0" TextAlignment="Center" FontSize="10" IsEnabled="False"/>
+            <ComboBox x:Name="deviceList" Margin="12,12,12,0" SelectionChanged="deviceList_SelectionChanged"/>
+            <Button x:Name="editBtn" Content="Edit" Margin="8,12,8,0" Background="#FF248BB1" BorderBrush="{x:Null}" Foreground="White" Click="editBtn_Click" Height="28"/>
+            <Grid x:Name="editPane" Visibility="Collapsed" Margin="8,32,8,0" Height="28">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="saveBtn" Content="Save" Background="#FF248BB1" BorderBrush="{x:Null}" Foreground="White" Click="saveBtn_Click"/>
+                <Button x:Name="cancelBtn" Content="Cancel" Grid.Column="1" Background="#FFB4B4B4" BorderBrush="{x:Null}" Foreground="White" Click="cancelBtn_Click"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
