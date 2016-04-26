@@ -2,6 +2,7 @@
 Face & Emotion detector by Microsoft Cognitive Service
 
 Powered by 24DVLOP COMPANY LIMITED
+http://www.24dvlop.com/cognitive-services
 __________________________________
 
 This project is the example project that using the emotion API from Microsoft Cognitive Service
