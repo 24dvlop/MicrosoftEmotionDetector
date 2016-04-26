@@ -1,7 +1,7 @@
 # Face & Emotion detector
 Face & Emotion detector by Microsoft Cognitive Service
 
-Powered by 24DVLOP COMPANY LIMITED
+Powered by 24DVLOP COMPANY LIMITED<br>
 http://www.24dvlop.com/cognitive-services
 __________________________________
 
