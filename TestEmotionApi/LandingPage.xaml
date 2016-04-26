@@ -88,6 +88,6 @@
                 <ImageBrush Stretch="Uniform" ImageSource="Assets/shutdownicon.png"/>
             </Button.Background>
         </Button>
-        <TextBlock x:Name="textBlock1" TextWrapping="Wrap" Text="Powered by 24DVLOP" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,12" FontSize="18.667" FontWeight="Bold"/>
+        <TextBlock x:Name="textBlock1" TextWrapping="Wrap" Text="Powered by 24DVLOP" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,12" FontSize="18.667"/>
     </Grid>
 </Window>
